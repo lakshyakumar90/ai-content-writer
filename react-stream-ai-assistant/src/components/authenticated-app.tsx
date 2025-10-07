@@ -79,6 +79,7 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
       const response = await fetch(`${backendUrl}/start-ai-agent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           channel_id: newChannel.id,
           channel_type: "messaging",

@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { User } from "stream-chat";
 import { Landing } from "@/components/landing";
@@ -7,24 +7,34 @@ import { Login } from "@/components/login";
 import { AuthenticatedApp } from "@/components/authenticated-app";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/providers/theme-provider";
-
-const USER_STORAGE_KEY = "chat-ai-app-user";
+import { Signup } from "@/components/signup";
 
 function App() {
-  const [user, setUser] = useState<User | null>(() => {
-    const savedUser = localStorage.getItem(USER_STORAGE_KEY);
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL as string;
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`${backendUrl}/auth/me`, { credentials: "include" });
+        const data = await res.json();
+        if (data?.user) {
+          setUser({ id: data.user.id, name: data.user.username } as User);
+        } else {
+          setUser(null);
+        }
+      } catch {
+        setUser(null);
+      }
+    })();
+  }, [backendUrl]);
 
   const handleUserLogin = (authenticatedUser: User) => {
-    const avatarUrl = `https://api.dicebear.com/9.x/avataaars/svg?seed=${authenticatedUser.name}`;
-    const userWithImage = { ...authenticatedUser, image: avatarUrl };
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userWithImage));
-    setUser(userWithImage);
+    setUser(authenticatedUser);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem(USER_STORAGE_KEY);
+  const handleLogout = async () => {
+    await fetch(`${backendUrl}/auth/logout`, { method: "POST", credentials: "include" });
     setUser(null);
   };
 
@@ -40,6 +50,16 @@ function App() {
                 <Navigate to="/dashboard" replace />
               ) : (
                 <Login onLogin={handleUserLogin} />
+              )
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              user ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <Signup onSignup={handleUserLogin} />
               )
             }
           />

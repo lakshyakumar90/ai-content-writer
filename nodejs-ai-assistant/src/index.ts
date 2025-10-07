@@ -1,13 +1,34 @@
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
+import cookieParser from "cookie-parser";
+import bcrypt from "bcryptjs";
 import { createAgent } from "./agents/createAgent";
 import { AgentPlatform, AIAgent } from "./agents/types";
 import { apiKey, serverClient } from "./serverClient";
+import { connectDb } from "./db";
+import { UserModel, UserDoc } from "./models/User";
+import { AuthedRequest, clearAuthCookie, requireAuth, setAuthCookie, signToken } from "./auth";
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+app.use(cookieParser());
+
+// CORS - Simplified configuration
+app.use(
+  cors({
+    origin: process.env.WEB_ORIGIN as string ,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  })
+);
+
+// Connect MongoDB
+connectDb().catch((e) => {
+  console.error("Failed to connect MongoDB", e);
+  process.exit(1);
+});
 
 // Map to store the AI Agent instances
 // [user_id string]: AI Agent
@@ -36,10 +57,64 @@ app.get("/", (req, res) => {
   });
 });
 
+// -------- AUTH ROUTES --------
+app.post("/auth/register", async (req, res) => {
+  const { email, username, password } = req.body || {};
+  if (!email || !username || !password) {
+    return res.status(400).json({ error: "email, username, password required" });
+  }
+  const exists = await UserModel.findOne({ email: String(email).toLowerCase().trim() }).lean<UserDoc>();
+  if (exists) {
+    return res.status(409).json({ error: "Email already registered" });
+  }
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = await UserModel.create({
+    email: String(email).toLowerCase().trim(),
+    username: String(username).trim(),
+    passwordHash,
+  });
+  const token = signToken(user._id.toString());
+  setAuthCookie(res, token);
+  res.json({ id: user._id.toString(), email: user.email, username: user.username });
+});
+
+app.post("/auth/login", async (req, res) => {
+  const { email, password } = req.body || {};
+  if (!email || !password) {
+    return res.status(400).json({ error: "email and password required" });
+  }
+  const user = await UserModel.findOne({ email: String(email).toLowerCase().trim() }).lean<UserDoc>();
+  if (!user) return res.status(401).json({ error: "Invalid credentials" });
+  const ok = await bcrypt.compare(String(password), user.passwordHash);
+  if (!ok) return res.status(401).json({ error: "Invalid credentials" });
+  const token = signToken(user._id.toString());
+  setAuthCookie(res, token);
+  res.json({ id: user._id.toString(), email: user.email, username: user.username });
+});
+
+app.get("/auth/me", async (req: AuthedRequest, res) => {
+  try {
+    await new Promise<void>((resolve, reject) =>
+      requireAuth(req, res, (err?: unknown) => (err ? reject(err) : resolve()))
+    );
+  } catch {
+    return res.json({ user: null });
+  }
+  const user = await UserModel.findById(req.userId).lean<UserDoc>();
+  if (!user) return res.json({ user: null });
+  res.json({ user: { id: user._id.toString(), email: user.email, username: user.username } });
+});
+
+app.post("/auth/logout", (req, res) => {
+  clearAuthCookie(res);
+  res.json({ ok: true });
+});
+// -------- END AUTH ROUTES --------
+
 /**
  * Handle the request to start the AI Agent
  */
-app.post("/start-ai-agent", async (req, res) => {
+app.post("/start-ai-agent", requireAuth, async (req, res) => {
   const { channel_id, channel_type = "messaging" } = req.body;
   console.log(`[API] /start-ai-agent called for channel: ${channel_id}`);
 
@@ -88,6 +163,7 @@ app.post("/start-ai-agent", async (req, res) => {
   } catch (error) {
     const errorMessage = (error as Error).message;
     console.error("Failed to start AI Agent", errorMessage);
+    console.error("Full error:", error);
     res
       .status(500)
       .json({ error: "Failed to start AI Agent", reason: errorMessage });
@@ -99,7 +175,7 @@ app.post("/start-ai-agent", async (req, res) => {
 /**
  * Handle the request to stop the AI Agent
  */
-app.post("/stop-ai-agent", async (req, res) => {
+app.post("/stop-ai-agent", requireAuth, async (req, res) => {
   const { channel_id } = req.body;
   console.log(`[API] /stop-ai-agent called for channel: ${channel_id}`);
   const user_id = `ai-bot-${channel_id.replace(/[!]/g, "")}`;
@@ -122,7 +198,7 @@ app.post("/stop-ai-agent", async (req, res) => {
   }
 });
 
-app.get("/agent-status", (req, res) => {
+app.get("/agent-status", requireAuth, (req, res) => {
   const { channel_id } = req.query;
   if (!channel_id || typeof channel_id !== "string") {
     return res.status(400).json({ error: "Missing channel_id" });
@@ -145,10 +221,9 @@ app.get("/agent-status", (req, res) => {
 });
 
 // Token provider endpoint - generates secure tokens
-app.post("/token", async (req, res) => {
+app.post("/token", requireAuth, async (req, res) => {
   try {
     const { userId } = req.body;
-
     if (!userId) {
       return res.status(400).json({
         error: "userId is required",

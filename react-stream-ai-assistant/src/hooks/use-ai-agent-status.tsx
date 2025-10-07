@@ -27,7 +27,8 @@ export const useAIAgentStatus = ({
 
     try {
       const response = await fetch(
-        `${backendUrl}/agent-status?channel_id=${channelId}`
+        `${backendUrl}/agent-status?channel_id=${channelId}`,
+        { credentials: "include" }
       );
       if (response.ok) {
         const data = await response.json();
@@ -61,6 +62,7 @@ export const useAIAgentStatus = ({
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           channel_id: channelId,
           channel_type: "messaging",
@@ -101,6 +103,7 @@ export const useAIAgentStatus = ({
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           channel_id: channelId,
         }),

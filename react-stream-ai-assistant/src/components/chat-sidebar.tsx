@@ -122,7 +122,7 @@ export const ChatSidebar = ({
                   )}
                   onClick={() => {
                     setActiveChannel(previewProps.channel);
-                    navigate(`/chat/${previewProps.channel.id}`);
+                    navigate(`/dashboard/chat/${previewProps.channel.id}`);
                     onClose();
                   }}
                 >

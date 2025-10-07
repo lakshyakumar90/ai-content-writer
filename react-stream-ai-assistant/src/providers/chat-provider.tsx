@@ -37,6 +37,7 @@ export const ChatProvider = ({ user, children }: ChatProviderProps) => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ userId: user.id }),
       });
 
