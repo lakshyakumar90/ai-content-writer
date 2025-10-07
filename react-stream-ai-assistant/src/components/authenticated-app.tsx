@@ -91,7 +91,7 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
 
       // 4. Set the channel as active and navigate
       setActiveChannel(newChannel);
-      navigate(`/chat/${newChannel.id}`);
+      navigate(`/dashboard/chat/${newChannel.id}`);
 
       // 5. Wait for AI agent to be added as member, then send message
       await memberAddedPromise;
@@ -105,7 +105,7 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
 
   const handleNewChatClick = () => {
     setActiveChannel(undefined);
-    navigate("/");
+    navigate("/dashboard");
     setSidebarOpen(false);
   };
 
@@ -118,7 +118,7 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
     if (channelToDelete) {
       try {
         if (channelId === channelToDelete.id) {
-          navigate("/");
+          navigate("/dashboard");
         }
         await channelToDelete.delete();
       } catch (error) {
