@@ -7,6 +7,9 @@ A modern AI-powered chat application built with **Stream Chat**, **OpenAI**, and
 - **Real-time Chat**: Powered by [GetStream.io](https://getstream.io) for seamless messaging
 - **AI Writing Assistant**: OpenAI GPT-4 integration for intelligent content generation
 - **Web Search**: Live web search capabilities using Tavily API for current information
+- **Image Generation**: AI-powered image creation using Google's Gemini 2.5 Flash Image model via OpenRouter ✅
+- **Image Editing**: AI-powered image editing (placeholder for future implementation)
+- **Image Analysis**: AI-powered image analysis using Google's Gemini 2.5 Flash Image model via OpenRouter ✅
 - **Modern UI**: Beautiful React interface with dark/light theme support
 - **Writing Prompts**: Categorized writing prompts for business, content, communication, and creative tasks
 - **Agent Management**: Dynamic AI agent lifecycle management
@@ -79,6 +82,12 @@ OPENAI_API_KEY=your_openai_api_key_here
 
 # Tavily API key - Get from https://tavily.com
 TAVILY_API_KEY=your_tavily_api_key_here
+
+# OpenRouter API key - Get from https://openrouter.ai (for image analysis)
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+
+# Web origin for CORS (adjust for your domain)
+WEB_ORIGIN=http://localhost:5173
 ```
 
 ### 3. Frontend Setup
@@ -132,6 +141,13 @@ VITE_BACKEND_URL=http://localhost:3000
 1. Sign up at [Tavily](https://tavily.com/)
 2. Get your API key from the dashboard
 3. Add it to your backend `.env` file
+
+#### OpenRouter API Setup
+
+1. Sign up at [OpenRouter](https://openrouter.ai/)
+2. Get your API key from the dashboard
+3. Add it to your backend `.env` file
+4. This enables image generation and analysis using Google's Gemini 2.5 Flash Image model
 
 ## 🚀 Running the Application
 
@@ -225,6 +241,9 @@ The frontend uses modern UI components built with:
 - `POST /stop-ai-agent` - Stop and cleanup AI agent
 - `GET /agent-status` - Check AI agent status
 - `POST /token` - Generate user authentication tokens
+- `POST /images/generate` - Generate images from text prompts using Gemini 2.5 Flash Image ✅
+- `POST /images/edit` - Edit existing images (placeholder endpoint)
+- `POST /images/analyze` - Analyze images using Gemini 2.5 Flash Image ✅
 
 ## 🔒 Security Features
 

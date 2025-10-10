@@ -65,7 +65,11 @@ function App() {
           />
           {/* Protected Dashboard */}
           <Route element={<ProtectedShell user={user} onLogout={handleLogout} />}>
-            <Route path="/dashboard" element={<AuthenticatedApp user={user!} onLogout={handleLogout} />} />
+            {/* default dashboard -> writing */}
+            <Route path="/dashboard" element={<Navigate to="/dashboard/writing" replace />} />
+            {/* sectioned dashboard */}
+            <Route path="/dashboard/:section" element={<AuthenticatedApp user={user!} onLogout={handleLogout} />} />
+            {/* chat route remains */}
             <Route path="/dashboard/chat/:channelId" element={<AuthenticatedApp user={user!} onLogout={handleLogout} />} />
           </Route>
           {/* Fallback */}

@@ -17,6 +17,8 @@ import { v4 as uuidv4 } from "uuid";
 import { ChatProvider } from "../providers/chat-provider";
 import { ChatInterface } from "./chat-interface";
 import { ChatSidebar } from "./chat-sidebar";
+import { ImageGenerator } from "./image-generator";
+import { ResumeAnalyzer } from "./resume-analyzer";
 
 interface AuthenticatedAppProps {
   user: User;
@@ -35,18 +37,23 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
   const [channelToDelete, setChannelToDelete] = useState<Channel | null>(null);
   const { client, setActiveChannel } = useChatContext();
   const navigate = useNavigate();
-  const { channelId } = useParams<{ channelId: string }>();
+  const { channelId, section } = useParams<{ channelId: string; section: string }>();
   const backendUrl = import.meta.env.VITE_BACKEND_URL as string;
 
   useEffect(() => {
     const syncChannelWithUrl = async () => {
       if (!client) return;
 
-      if (channelId) {
+      // Only load a channel if we're explicitly on a chat route with a valid channelId
+      const currentPath = window.location.pathname;
+      const isOnChatRoute = currentPath.includes('/chat/');
+      
+      if (channelId && isOnChatRoute) {
         const channel = client.channel("messaging", channelId);
         await channel.watch();
         setActiveChannel(channel);
-      } else {
+      } else if (!isOnChatRoute) {
+        // Only clear active channel when we're definitely not on a chat route
         setActiveChannel(undefined);
       }
     };
@@ -105,9 +112,16 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
   };
 
   const handleNewChatClick = () => {
+    // Clear the active channel first
     setActiveChannel(undefined);
-    navigate("/dashboard");
+    // Force navigation with replace to ensure clean state
+    navigate("/dashboard/writing", { replace: true });
     setSidebarOpen(false);
+    
+    // Additional cleanup - ensure no channel is active
+    setTimeout(() => {
+      setActiveChannel(undefined);
+    }, 100);
   };
 
   const handleDeleteClick = (channel: Channel) => {
@@ -153,6 +167,8 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
   const sort: ChannelSort = { last_message_at: -1 };
   const options = { state: true, presence: true, limit: 10 };
 
+  const normalizedSection = section === "images" || section === "resume" ? section : "writing";
+
   return (
     <div className="flex h-full w-full">
       <ChatSidebar
@@ -163,11 +179,25 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
         onChannelDelete={handleDeleteClick}
       />
       <div className="flex-1 flex flex-col min-w-0">
-        <ChatInterface
-          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-          onNewChatMessage={handleNewChatMessage}
-          backendUrl={backendUrl}
-        />
+        {normalizedSection === "writing" && (
+          <ChatInterface
+            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            onNewChatMessage={handleNewChatMessage}
+            backendUrl={backendUrl}
+          />
+        )}
+        {normalizedSection === "images" && (
+          <ImageGenerator
+            backendUrl={backendUrl}
+            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+          />
+        )}
+        {normalizedSection === "resume" && (
+          <ResumeAnalyzer
+            backendUrl={backendUrl}
+            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+          />
+        )}
       </div>
 
       {/* Delete Chat Confirmation Dialog */}
