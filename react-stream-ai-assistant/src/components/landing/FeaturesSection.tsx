@@ -47,14 +47,6 @@ const features = [
   },
   {
     category: "current",
-    icon: Users,
-    title: "Real-time Collaboration",
-    description: "Work together seamlessly with real-time messaging powered by GetStream.io.",
-    status: "available",
-    highlights: ["Live chat", "Instant updates", "Team collaboration"]
-  },
-  {
-    category: "current",
     icon: Shield,
     title: "Secure Authentication",
     description: "Enterprise-grade security with JWT authentication and encrypted data transmission.",
@@ -202,7 +194,7 @@ export function FeaturesSection() {
         </motion.div>
 
         {/* Coming Soon Features */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
@@ -253,7 +245,7 @@ export function FeaturesSection() {
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

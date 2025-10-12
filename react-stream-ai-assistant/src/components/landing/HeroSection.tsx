@@ -8,7 +8,7 @@ export function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <section className="relative min-h-screen pt-28 flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
@@ -99,29 +99,6 @@ export function HeroSection() {
               Start Writing Now
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg font-semibold rounded-xl backdrop-blur-sm transition-all duration-300 hover:scale-105"
-            >
-              Watch Demo
-            </Button>
-          </motion.div>
-
-          {/* Trust Indicators */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="pt-12 text-center"
-          >
-            <p className="text-gray-400 text-sm mb-4">Trusted by content creators worldwide</p>
-            <div className="flex justify-center items-center gap-8 opacity-60">
-              <div className="w-24 h-8 bg-white/20 rounded"></div>
-              <div className="w-24 h-8 bg-white/20 rounded"></div>
-              <div className="w-24 h-8 bg-white/20 rounded"></div>
-              <div className="w-24 h-8 bg-white/20 rounded"></div>
-            </div>
           </motion.div>
         </motion.div>
       </div>

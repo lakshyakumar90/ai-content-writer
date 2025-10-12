@@ -23,7 +23,7 @@ const techStack = [
       { name: "Express", description: "Web framework" },
       { name: "MongoDB", description: "NoSQL database" },
       { name: "JWT", description: "Authentication" },
-      { name: "Socket.io", description: "Real-time communication" },
+      // { name: "Socket.io", description: "Real-time communication" },
       { name: "TypeScript", description: "Type-safe backend" }
     ]
   },
@@ -31,12 +31,12 @@ const techStack = [
     category: "AI & ML",
     color: "from-purple-500 to-pink-500",
     technologies: [
-      { name: "OpenAI GPT-4", description: "Advanced language model" },
+      // { name: "OpenAI GPT-4", description: "Advanced language model" },
       { name: "Google Gemini", description: "Multimodal AI model" },
       { name: "OpenRouter", description: "AI model access" },
       { name: "Tavily API", description: "Web search integration" },
       { name: "Stream Chat", description: "Real-time messaging" },
-      { name: "Custom Agents", description: "Intelligent assistants" }
+      // { name: "Custom Agents", description: "Intelligent assistants" }
     ]
   },
   {
@@ -80,7 +80,7 @@ export function TechStackSection() {
         </motion.div>
 
         {/* Tech Stack Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {techStack.map((category, categoryIndex) => (
             <motion.div
               key={category.category}
@@ -121,10 +121,10 @@ export function TechStackSection() {
               </Card>
             </motion.div>
           ))}
-        </div>
+        </div> */}
 
         {/* Stats Section */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
@@ -155,7 +155,7 @@ export function TechStackSection() {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </motion.div> */}
 
         {/* Future Technologies */}
         <motion.div
