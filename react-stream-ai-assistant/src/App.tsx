@@ -40,7 +40,7 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="h-screen bg-background">
+      <div className="min-h-screen bg-background">
         <Routes>
           <Route path="/" element={<Landing isAuthenticated={!!user} />} />
           <Route

@@ -11,21 +11,21 @@ import { UserModel, UserDoc } from "./models/User";
 import { AuthedRequest, clearAuthCookie, requireAuth, setAuthCookie, signToken } from "./auth";
 import type { Request, Response } from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import OpenAI from "openai";
-
-// Initialize OpenRouter client for image analysis
-const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY,
-  defaultHeaders: {
-    "HTTP-Referer": process.env.WEB_ORIGIN || "http://localhost:5173",
-    "X-Title": "AI Content Writer",
-  },
-});
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
+// Initialize OpenAI client for existing functionality
+const openai = new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1",
+});
+
+// Initialize Google GenAI client for native image generation
+const googleGenAI = new GoogleGenAI({});
 
 // CORS - Simplified configuration
 app.use(

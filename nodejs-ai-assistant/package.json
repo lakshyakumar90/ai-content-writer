@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
+    "@google/genai": "^1.24.0",
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.7.2",
     "bcryptjs": "^3.0.2",
@@ -25,6 +26,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "mime": "^4.1.0",
     "mongoose": "^8.19.1",
     "openai": "^4.73.1",
     "stream-chat": "^8.46.0"
@@ -34,6 +36,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.7.2",
     "nodemon": "^3.0.2",
     "prettier": "^3.4.1",
     "typescript": "^5.7.2"

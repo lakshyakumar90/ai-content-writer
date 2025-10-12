@@ -170,7 +170,7 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
   const normalizedSection = section === "images" || section === "resume" ? section : "writing";
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-screen w-full overflow-hidden">
       <ChatSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -178,7 +178,7 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
         onNewChat={handleNewChatClick}
         onChannelDelete={handleDeleteClick}
       />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {normalizedSection === "writing" && (
           <ChatInterface
             onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
