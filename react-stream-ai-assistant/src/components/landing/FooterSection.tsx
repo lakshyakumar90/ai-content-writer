@@ -15,28 +15,9 @@ export function FooterSection() {
   const footerLinks = {
     Product: [
       { name: "Features", href: "#features" },
-      { name: "Pricing", href: "#pricing" },
-      { name: "API", href: "#api" },
-      { name: "Integrations", href: "#integrations" }
+      { name: "Technology", href: "#technology" },
+      { name: "Contact", href: "#contact" }
     ],
-    Company: [
-      { name: "About", href: "#about" },
-      { name: "Blog", href: "#blog" },
-      { name: "Careers", href: "#careers" },
-      { name: "Press", href: "#press" }
-    ],
-    Resources: [
-      { name: "Documentation", href: "#docs" },
-      { name: "Help Center", href: "#help" },
-      { name: "Community", href: "#community" },
-      { name: "Tutorials", href: "#tutorials" }
-    ],
-    Legal: [
-      { name: "Privacy Policy", href: "#privacy" },
-      { name: "Terms of Service", href: "#terms" },
-      { name: "Cookie Policy", href: "#cookies" },
-      { name: "GDPR", href: "#gdpr" }
-    ]
   };
 
   const socialLinks = [
@@ -94,7 +75,7 @@ export function FooterSection() {
 
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Brand Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -116,19 +97,6 @@ export function FooterSection() {
               Transform your ideas into compelling content with our intelligent writing assistant. 
               From brainstorming to final drafts, we've got you covered.
             </p>
-            <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.name}
-                  href={social.href}
-                  className={`p-2 bg-white/10 rounded-lg border border-white/20 transition-all duration-300 ${social.color} hover:bg-white/20 hover:scale-110`}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <social.icon className="w-5 h-5" />
-                </motion.a>
-              ))}
-            </div>
           </motion.div>
 
           {/* Links Sections */}
@@ -139,6 +107,7 @@ export function FooterSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
+              className="justify-end"
             >
               <h4 className="font-semibold text-white mb-4">{category}</h4>
               <ul className="space-y-3">
@@ -165,28 +134,16 @@ export function FooterSection() {
           viewport={{ once: true }}
           className="border-t border-white/10 mt-16 pt-8"
         >
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 w-full">
             <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <span>© 2024 AI Content Writer. Made with</span>
+              <span>© 2025 AI Content Writer. Made with</span>
               <Heart className="w-4 h-4 text-red-500 fill-current" />
               <span>by the team</span>
             </div>
             
             <div className="flex items-center gap-6 text-sm text-gray-400">
               <span>All rights reserved</span>
-              <span>•</span>
-              <span>Built with modern web technologies</span>
             </div>
-
-            {/* Back to Top Button */}
-            <motion.button
-              onClick={scrollToTop}
-              className="p-3 bg-white/10 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 group"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <ArrowUp className="w-5 h-5 group-hover:text-purple-400 transition-colors" />
-            </motion.button>
           </div>
         </motion.div>
       </div>

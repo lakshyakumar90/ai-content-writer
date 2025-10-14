@@ -29,14 +29,14 @@ const features = [
     status: "available",
     highlights: ["Real-time chat", "Context awareness", "Multiple writing styles"]
   },
-  {
-    category: "current", 
-    icon: ImageIcon,
-    title: "AI Image Generation",
-    description: "Create stunning visuals with Google's Gemini 2.5 Flash Image model via OpenRouter.",
-    status: "available",
-    highlights: ["Text-to-image", "Image analysis", "High quality output"]
-  },
+  // {
+  //   category: "current", 
+  //   icon: ImageIcon,
+  //   title: "AI Image Generation",
+  //   description: "Create stunning visuals with Google's Gemini 2.5 Flash Image model via OpenRouter.",
+  //   status: "unavailable",
+  //   highlights: ["Text-to-image", "Image analysis", "High quality output"]
+  // },
   {
     category: "current",
     icon: Search,

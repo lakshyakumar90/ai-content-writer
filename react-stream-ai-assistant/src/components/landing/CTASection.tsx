@@ -68,17 +68,17 @@ export function CTASection() {
               Start Writing Now
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button
+            {/* <Button
               variant="outline"
               size="lg"
               className="border-purple-300 text-purple-600 hover:bg-purple-50 dark:border-purple-600 dark:text-purple-400 dark:hover:bg-purple-900/20 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105"
             >
               View Pricing
-            </Button>
+            </Button> */}
           </div>
 
           {/* Benefits */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
             {benefits.map((benefit, index) => (
               <motion.div
                 key={benefit}
@@ -92,7 +92,7 @@ export function CTASection() {
                 <span>{benefit}</span>
               </motion.div>
             ))}
-          </div>
+          </div> */}
         </motion.div>
 
         {/* Testimonials */}
