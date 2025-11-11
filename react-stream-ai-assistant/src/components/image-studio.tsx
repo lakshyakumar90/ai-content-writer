@@ -3,9 +3,30 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Slider } from "./ui/slider";
 import { ScrollArea } from "./ui/scroll-area";
-import { Loader2, Download, ZoomIn, Image as ImageIcon, Library, Trash2, ArrowLeft } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import {
+  Loader2,
+  Download,
+  ZoomIn,
+  Image as ImageIcon,
+  Library,
+  Trash2,
+  ArrowLeft,
+  MoreVertical,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 
 type HistoryItem = {
@@ -14,13 +35,12 @@ type HistoryItem = {
   imageUrl: string;
   sourceUrl?: string;
   model: string;
-  size?: number;
   createdAt: string;
 };
 
 export function ImageStudio({ backendUrl }: { backendUrl: string }) {
   const [prompt, setPrompt] = useState("");
-  const [size, setSize] = useState(512);
+  const [size, setSize] = useState<number>(512);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -30,7 +50,10 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const navigate = useNavigate();
 
-  const canGenerate = useMemo(() => !!prompt && !generating, [prompt, generating]);
+  const canGenerate = useMemo(
+    () => !!prompt && !generating,
+    [prompt, generating]
+  );
 
   const fetchHistory = async (reset = false) => {
     if (loadingHistory || (!hasMore && !reset)) return;
@@ -38,9 +61,12 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
     setError(null);
     try {
       const nextPage = reset ? 1 : page;
-      const res = await fetch(`${backendUrl}/images/history?page=${nextPage}&limit=20`, {
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${backendUrl}/images/history?page=${nextPage}&limit=20`,
+        {
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || "Failed to fetch history");
@@ -80,7 +106,10 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
       }
       setImageUrl(data.imageUrl);
       // prepend to history
-      setHistory((prev) => [{ ...data, createdAt: data.createdAt || new Date().toISOString() }, ...prev]);
+      setHistory((prev) => [
+        { ...data, createdAt: data.createdAt || new Date().toISOString() },
+        ...prev,
+      ]);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Unknown error";
       setError(msg);
@@ -128,7 +157,10 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
       <div className="mx-auto max-w-7xl px-4 py-6 space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={() => navigate("/dashboard/writing")}>
+            <Button
+              variant="ghost"
+              onClick={() => navigate("/dashboard/writing")}
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Dashboard
             </Button>
@@ -156,11 +188,33 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Size: {size}x{size}</Label>
-                <Slider min={256} max={1024} step={64} value={[size]} onValueChange={(v) => setSize(v[0])} />
+                <Label htmlFor="size">Size</Label>
+                <Select
+                  value={String(size)}
+                  onValueChange={(v) => setSize(Number(v))}
+                >
+                  <SelectTrigger id="size">
+                    <SelectValue placeholder="Choose size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="512">512 px (fast)</SelectItem>
+                    <SelectItem value="768">768 px (balanced)</SelectItem>
+                    <SelectItem value="1024">1024 px (high detail)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <Button onClick={handleGenerate} disabled={!canGenerate} className="w-full">
-                {generating ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating</> : "Generate"}
+              <Button
+                onClick={handleGenerate}
+                disabled={!canGenerate}
+                className="w-full"
+              >
+                {generating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating
+                  </>
+                ) : (
+                  "Generate"
+                )}
               </Button>
               {error && <p className="text-sm text-red-600">{error}</p>}
             </CardContent>
@@ -175,18 +229,48 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
               <div className="h-[420px] border rounded-md flex items-center justify-center overflow-hidden">
                 {imageUrl ? (
                   <div className="relative w-full h-full">
-                    <img src={imageUrl} alt="Generated" className="object-contain w-full h-full" />
+                    <img
+                      src={imageUrl}
+                      alt="Generated"
+                      className="object-contain w-full h-full"
+                    />
+                    {generating && (
+                      <div className="absolute inset-0 bg-background/70 backdrop-blur-sm flex items-center justify-center">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Generating...
+                        </div>
+                      </div>
+                    )}
                     <div className="absolute top-3 right-3 flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => window.open(imageUrl, "_blank")}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(imageUrl, "_blank")}
+                      >
                         <ZoomIn className="h-4 w-4 mr-1" /> View
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleDownload(imageUrl)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDownload(imageUrl)}
+                      >
                         <Download className="h-4 w-4 mr-1" /> Download
                       </Button>
                     </div>
+                    {prompt ? (
+                      <div
+                        className="absolute left-3 bottom-3 max-w-[80%] rounded-md bg-background/80 px-2 py-1 text-xs border truncate"
+                        title={prompt}
+                      >
+                        {prompt}
+                      </div>
+                    ) : null}
                   </div>
                 ) : (
-                  <div className="text-sm text-muted-foreground">Your generated image will appear here</div>
+                  <div className="text-sm text-muted-foreground">
+                    Your generated image will appear here
+                  </div>
                 )}
               </div>
             </CardContent>
@@ -201,28 +285,76 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-[420px]">
+            <ScrollArea className="">
               {history.length === 0 ? (
-                <div className="h-[380px] flex items-center justify-center text-sm text-muted-foreground">
+                <div className="flex items-center justify-center text-sm text-muted-foreground">
                   No images yet. Generate your first one above.
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {history.map((item) => (
-                    <div key={item._id} className="group relative border rounded-md overflow-hidden">
-                      <img src={item.imageUrl} alt={item.prompt} className="object-cover w-full h-40" />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors" />
-                      <div className="absolute bottom-2 left-2 right-2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button size="sm" variant="secondary" onClick={() => window.open(item.imageUrl, "_blank")}>
-                          <ZoomIn className="h-3 w-3 mr-1" /> View
-                        </Button>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="secondary" onClick={() => handleDownload(item.imageUrl, "library-image")}>
-                            <Download className="h-3 w-3 mr-1" /> DL
-                          </Button>
-                          <Button size="sm" variant="destructive" onClick={() => handleDelete(item._id)}>
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
+                    <div
+                      key={item._id}
+                      className="group relative border rounded-md overflow-hidden hover:shadow-lg transition-shadow"
+                    >
+                      <img
+                        src={item.imageUrl}
+                        alt={item.prompt}
+                        className="object-cover w-full h-56"
+                      />
+                      {/* Dark overlay on hover */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors" />
+                      
+                      {/* 3-dot menu - always visible */}
+                      <div className="absolute top-2 right-2 z-10">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => window.open(item.imageUrl, "_blank")}
+                            >
+                              <ZoomIn className="h-4 w-4 mr-2" />
+                              View
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleDownload(item.imageUrl, "library-image")
+                              }
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              Download
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(item._id)}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+
+                      {/* Date and prompt - only visible on hover */}
+                      <div className="absolute inset-x-0 bottom-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="space-y-2">
+                          <div className="text-[10px] px-2 py-1 rounded bg-background/90 border w-fit">
+                            {new Date(item.createdAt).toLocaleDateString()}
+                          </div>
+                          <div
+                            className="rounded bg-background/90 border px-2 py-1.5 text-xs leading-tight line-clamp-3"
+                            title={item.prompt}
+                          >
+                            {item.prompt}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -232,10 +364,16 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
               <div className="flex justify-center py-4">
                 {hasMore ? (
                   <Button variant="outline" onClick={() => fetchHistory()}>
-                    {loadingHistory ? <Loader2 className="h-4 w-4 animate-spin" /> : "Load more"}
+                    {loadingHistory ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      "Load more"
+                    )}
                   </Button>
                 ) : (
-                  <span className="text-xs text-muted-foreground">No more items</span>
+                  <span className="text-xs text-muted-foreground">
+                    No more items
+                  </span>
                 )}
               </div>
             </ScrollArea>
@@ -245,5 +383,3 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
     </div>
   );
 }
-
-

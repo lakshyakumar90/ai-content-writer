@@ -17,8 +17,8 @@ import { v4 as uuidv4 } from "uuid";
 import { ChatProvider } from "../providers/chat-provider";
 import { ChatInterface } from "./chat-interface";
 import { ChatSidebar } from "./chat-sidebar";
-import { ImageGenerator } from "./image-generator";
-import { ResumeAnalyzer } from "./resume-analyzer";
+import { ImageStudio } from "./image-studio";
+import { ResumeStudio } from "./resume-studio";
 
 interface AuthenticatedAppProps {
   user: User;
@@ -187,13 +187,13 @@ const AuthenticatedCore = ({ user, onLogout }: AuthenticatedAppProps) => {
           />
         )}
         {normalizedSection === "images" && (
-          <ImageGenerator
+          <ImageStudio
             backendUrl={backendUrl}
             onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           />
         )}
         {normalizedSection === "resume" && (
-          <ResumeAnalyzer
+          <ResumeStudio
             backendUrl={backendUrl}
             onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           />
