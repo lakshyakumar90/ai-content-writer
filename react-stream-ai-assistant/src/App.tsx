@@ -8,6 +8,8 @@ import { AuthenticatedApp } from "@/components/authenticated-app";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Signup } from "@/components/signup";
+import { ImageStudio } from "@/components/image-studio";
+import { ResumeStudio } from "@/components/resume-studio";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -65,6 +67,10 @@ function App() {
           />
           {/* Protected Dashboard */}
           <Route element={<ProtectedShell user={user} onLogout={handleLogout} />}>
+            {/* Standalone Image Studio page (outside dashboard) */}
+            <Route path="/images" element={<ImageStudio backendUrl={backendUrl} />} />
+            {/* Standalone Resume Studio page */}
+            <Route path="/resume" element={<ResumeStudio backendUrl={backendUrl} />} />
             {/* default dashboard -> writing */}
             <Route path="/dashboard" element={<Navigate to="/dashboard/writing" replace />} />
             {/* sectioned dashboard */}

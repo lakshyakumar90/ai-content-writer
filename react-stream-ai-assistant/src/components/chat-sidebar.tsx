@@ -174,7 +174,7 @@ export const ChatSidebar = ({
               )}
               onClick={() => {
                 setActiveChannel(undefined);
-                navigate("/dashboard/images");
+                navigate("/images");
                 onClose();
               }}
             >
@@ -188,7 +188,7 @@ export const ChatSidebar = ({
               )}
               onClick={() => {
                 setActiveChannel(undefined);
-                navigate("/dashboard/resume");
+                navigate("/resume");
                 onClose();
               }}
             >

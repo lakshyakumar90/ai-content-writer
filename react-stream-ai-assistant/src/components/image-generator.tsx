@@ -20,11 +20,11 @@ export const ImageGenerator = ({ backendUrl, onToggleSidebar }: ImageGeneratorPr
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [mode, setMode] = useState<"text" | "edit" | "analyze">("text");
-  const [editImage, setEditImage] = useState<string | null>(null);
-  const [analyzeImageUrl, setAnalyzeImageUrl] = useState("");
-  const [analysisResult, setAnalysisResult] = useState<string | null>(null);
-  const [analyzing, setAnalyzing] = useState(false);
+  const [mode] = useState<"text">("text");
+  const [editImage] = useState<string | null>(null);
+  const [analyzeImageUrl] = useState("");
+  const [analysisResult] = useState<string | null>(null);
+  const [analyzing] = useState(false);
   const [showFullImage, setShowFullImage] = useState(false);
   const [fullImageUrl, setFullImageUrl] = useState<string | null>(null);
 
@@ -48,11 +48,8 @@ export const ImageGenerator = ({ backendUrl, onToggleSidebar }: ImageGeneratorPr
     setError(null);
     setImageUrl(null);
     try {
-      const endpoint = mode === "text" ? "/images/generate" : "/images/edit";
-      const body =
-        mode === "text"
-          ? { prompt, size }
-          : { prompt, imageBase64: editImage };
+      const endpoint = "/images/generate";
+      const body = { prompt, size };
       const res = await fetch(`${backendUrl}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -82,40 +79,9 @@ export const ImageGenerator = ({ backendUrl, onToggleSidebar }: ImageGeneratorPr
     }
   };
 
-  const handleAnalyze = async () => {
-    setAnalyzing(true);
-    setError(null);
-    setAnalysisResult(null);
-    try {
-      const res = await fetch(`${backendUrl}/images/analyze`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          imageUrl: analyzeImageUrl,
-          prompt: prompt || "What is in this image?"
-        }),
-      });
-      
-      const data = await res.json();
-      
-      if (!res.ok) {
-        const errorMsg = data.error || "Failed to analyze image";
-        const details = data.details ? ` - ${data.details}` : "";
-        throw new Error(`${errorMsg}${details}`);
-      }
-      
-      setAnalysisResult(data.analysis);
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "Unknown error";
-      setError(msg);
-      console.error("Image analysis error:", e);
-    } finally {
-      setAnalyzing(false);
-    }
-  };
+  const handleAnalyze = async () => {};
 
-  const canSubmit = mode === "text" ? !!prompt : mode === "edit" ? !!prompt && !!editImage : !!analyzeImageUrl;
+  const canSubmit = !!prompt;
 
   const handleDownloadImage = async (imageUrl: string, filename: string = "generated-image") => {
     try {
@@ -188,103 +154,35 @@ export const ImageGenerator = ({ backendUrl, onToggleSidebar }: ImageGeneratorPr
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-2 text-sm">
-            <Button
-              variant={mode === "text" ? "default" : "outline"}
-              onClick={() => setMode("text")}
-            >
-              Text to Image
-            </Button>
-            <Button
-              variant={mode === "edit" ? "default" : "outline"}
-              onClick={() => setMode("edit")}
-            >
-              Image Editing
-            </Button>
-            <Button
-              variant={mode === "analyze" ? "default" : "outline"}
-              onClick={() => setMode("analyze")}
-            >
-              <Eye className="h-3 w-3 mr-1" />
-              Image Analysis
-            </Button>
-          </div>
-
           <div className="space-y-2">
-            <Label htmlFor="img-prompt">
-              {mode === "analyze" ? "Analysis Prompt (optional)" : "Prompt"}
-            </Label>
+            <Label htmlFor="img-prompt">Prompt</Label>
             <Input
               id="img-prompt"
-              placeholder={
-                mode === "text" 
-                  ? "Describe the image you want to create" 
-                  : mode === "edit" 
-                  ? "Describe the edits you want"
-                  : "What would you like to know about this image? (e.g., 'What is in this image?', 'Describe the scene', 'Identify objects')"
-              }
+              placeholder="Describe the image you want to create"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
             />
           </div>
-
-          {mode === "text" ? (
-            <div className="space-y-2">
-              <Label>Size: {size}x{size}</Label>
-              <Slider
-                min={256}
-                max={1024}
-                step={64}
-                value={[size]}
-                onValueChange={(v) => setSize(v[0])}
-              />
-            </div>
-          ) : mode === "edit" ? (
-            <div className="space-y-2">
-              <Label>Upload image to edit</Label>
-              <Input type="file" accept="image/*" onChange={handleFileChange} />
-              {editImage && (
-                <div className="mt-2">
-                  <img src={editImage} alt="To edit" className="max-h-48 rounded-md border" />
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <Label>Image URL to analyze</Label>
-              <Input
-                placeholder="https://example.com/image.jpg"
-                value={analyzeImageUrl}
-                onChange={(e) => setAnalyzeImageUrl(e.target.value)}
-              />
-              {analyzeImageUrl && (
-                <div className="mt-2">
-                  <img src={analyzeImageUrl} alt="To analyze" className="max-h-48 rounded-md border" />
-                </div>
-              )}
-            </div>
-          )}
-
+          <div className="space-y-2">
+            <Label>Size: {size}x{size}</Label>
+            <Slider
+              min={256}
+              max={1024}
+              step={64}
+              value={[size]}
+              onValueChange={(v) => setSize(v[0])}
+            />
+          </div>
           <Button 
-            onClick={mode === "analyze" ? handleAnalyze : handleGenerate} 
-            disabled={!canSubmit || (mode === "analyze" ? analyzing : generating)}
+            onClick={handleGenerate} 
+            disabled={!canSubmit || generating}
           >
-            {mode === "analyze" ? (
-              analyzing ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Analyzing
-                </>
-              ) : (
-                <>
-                  <Eye className="h-4 w-4 mr-2" /> Analyze Image
-                </>
-              )
-            ) : generating ? (
+            {generating ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating
               </>
             ) : (
-              mode === "text" ? "Generate Image" : "Apply Edits"
+              "Generate Image"
             )}
           </Button>
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -292,70 +190,7 @@ export const ImageGenerator = ({ backendUrl, onToggleSidebar }: ImageGeneratorPr
       </Card>
 
       <div className="flex-1 min-h-0">
-        {mode === "analyze" ? (
-          analysisResult ? (
-            <div className="h-full w-full p-4 space-y-4">
-              {/* Original Image */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center justify-between">
-                    Analyzed Image
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleViewFullImage(analyzeImageUrl)}
-                      >
-                        <ZoomIn className="h-4 w-4 mr-1" />
-                        View Full
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDownloadImage(analyzeImageUrl, "analyzed-image")}
-                      >
-                        <Download className="h-4 w-4 mr-1" />
-                        Download
-                      </Button>
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[300px]">
-                    <div className="flex items-center justify-center p-4">
-                      <img 
-                        src={analyzeImageUrl} 
-                        alt="Analyzed Image" 
-                        className="max-h-full max-w-full rounded-md border shadow-lg cursor-pointer hover:opacity-90 transition-opacity"
-                        onClick={() => handleViewFullImage(analyzeImageUrl)}
-                      />
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-              
-              {/* Analysis Result */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Analysis Result</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[300px]">
-                    <Textarea
-                      value={analysisResult}
-                      readOnly
-                      className="min-h-[250px] resize-none border-0"
-                    />
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-            </div>
-          ) : (
-            <div className="h-full flex items-center justify-center text-sm text-muted-foreground border rounded-md">
-              Analysis result will appear here
-            </div>
-          )
-        ) : imageUrl ? (
+        {imageUrl ? (
           <div className="h-full w-full p-4">
             <Card>
               <CardHeader>
@@ -397,7 +232,7 @@ export const ImageGenerator = ({ backendUrl, onToggleSidebar }: ImageGeneratorPr
           </div>
         ) : (
           <div className="h-full flex items-center justify-center text-sm text-muted-foreground border rounded-md">
-            {mode === "text" ? "Generated image will appear here" : "Edited image will appear here"}
+            Generated image will appear here
           </div>
         )}
       </div>
