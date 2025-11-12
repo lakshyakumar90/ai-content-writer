@@ -38,8 +38,67 @@ type HistoryItem = {
   createdAt: string;
 };
 
+type PromptCategory = {
+  name: string;
+  prompts: string[];
+};
+
+const PREDEFINED_PROMPTS: PromptCategory[] = [
+  {
+    name: "LinkedIn Post",
+    prompts: [
+      "Professional business meeting in modern office, diverse team collaborating, natural lighting, corporate photography style",
+      "Successful business professional looking at laptop with growth charts, office background, inspirational mood, professional photography",
+      "Team celebrating achievement with high-five, modern workplace, authentic emotions, corporate style",
+      "Professional workspace with laptop, coffee, notebook and plants, minimalist aesthetic, top-down view, clean composition",
+      "Business handshake in modern office, professional attire, partnership concept, natural window lighting",
+    ],
+  },
+  {
+    name: "Instagram Post",
+    prompts: [
+      "Aesthetic flat lay with coffee, flowers, and journal on pastel background, Instagram-worthy, soft natural light, trendy composition",
+      "Vibrant sunset at tropical beach, palm trees silhouette, golden hour, dreamy atmosphere, travel photography style",
+      "Minimalist lifestyle shot with plants and natural textures, bohemian aesthetic, warm tones, cozy vibes",
+      "Fashion-forward outfit of the day, urban street background, trendy style, natural poses, lifestyle photography",
+      "Delicious food photography, colorful healthy bowl, overhead shot, natural ingredients, appetizing presentation",
+    ],
+  },
+  {
+    name: "YouTube Thumbnail",
+    prompts: [
+      "Bold text 'AMAZING RESULTS' with shocked expression face, vibrant colors, high contrast, energetic composition, YouTube thumbnail style",
+      "Split screen before and after comparison, dramatic lighting, bold arrows pointing, eye-catching colors, clickable thumbnail design",
+      "Person pointing at floating question marks, surprised expression, bright background, dynamic composition, attention-grabbing style",
+      "Exciting tech setup with glowing screens, futuristic vibe, neon accents, dramatic lighting, gaming or tech review aesthetic",
+      "Money and success symbols floating around excited person, wealth concept, golden tones, motivational energy, finance thumbnail style",
+    ],
+  },
+  {
+    name: "Blog Header",
+    prompts: [
+      "Abstract modern geometric shapes in gradient colors, minimalist design, tech blog aesthetic, clean composition, wide banner format",
+      "Cozy reading nook with books and warm lighting, literary atmosphere, inviting mood, lifestyle blog header style",
+      "Fresh ingredients and cooking utensils on rustic wooden table, food blog aesthetic, natural lighting, appetizing composition",
+      "Laptop with coffee on wooden desk, plants in background, productivity concept, blogger lifestyle, warm natural light",
+      "Travel destination landscape, epic vista, adventure mood, wanderlust aesthetic, inspirational travel blog header",
+    ],
+  },
+  {
+    name: "Social Media Story",
+    prompts: [
+      "Vertical portrait format motivational quote design, pastel gradient background, elegant typography, Instagram story style",
+      "Behind the scenes moment, authentic candid shot, personal touch, story-telling aesthetic, vertical format",
+      "Product showcase on aesthetic background, lifestyle context, natural lighting, vertical composition, shopping inspiration",
+      "Daily routine aesthetic moment, morning coffee or evening wind-down, cozy atmosphere, relatable content, story format",
+      "Interactive poll or question sticker concept, colorful background, engaging design, fun and playful style, vertical story layout",
+    ],
+  },
+];
+
 export function ImageStudio({ backendUrl }: { backendUrl: string }) {
   const [prompt, setPrompt] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [size, setSize] = useState<number>(512);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -179,12 +238,57 @@ export function ImageStudio({ backendUrl }: { backendUrl: string }) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
+                <Label htmlFor="category">Content Type (Optional)</Label>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={(v) => {
+                    setSelectedCategory(v);
+                    setPrompt(""); // Clear prompt when category changes
+                  }}
+                >
+                  <SelectTrigger id="category">
+                    <SelectValue placeholder="Choose a content type..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Custom Prompt</SelectItem>
+                    {PREDEFINED_PROMPTS.map((category) => (
+                      <SelectItem key={category.name} value={category.name}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {selectedCategory && selectedCategory !== "none" && (
+                <div className="space-y-2">
+                  <Label>Suggested Prompts</Label>
+                  <ScrollArea className="h-40 border rounded-md p-2">
+                    <div className="space-y-2">
+                      {PREDEFINED_PROMPTS.find(
+                        (cat) => cat.name === selectedCategory
+                      )?.prompts.map((suggestedPrompt, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setPrompt(suggestedPrompt)}
+                          className="w-full text-left text-xs p-2 rounded border hover:bg-accent hover:border-primary transition-colors"
+                        >
+                          {suggestedPrompt}
+                        </button>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+              )}
+
+              <div className="space-y-2">
                 <Label htmlFor="prompt">Prompt</Label>
-                <Input
+                <textarea
                   id="prompt"
                   placeholder="A cozy reading nook by a window at sunset..."
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
                 />
               </div>
               <div className="space-y-2">
