@@ -58,7 +58,6 @@ export function Landing({ isAuthenticated }: LandingProps) {
               {[
                 { name: 'Features', href: '#features' },
                 { name: 'Technology', href: '#technology' },
-                { name: 'Pricing', href: '#pricing' },
                 { name: 'Contact', href: '#contact' }
               ].map((item) => (
                 <button

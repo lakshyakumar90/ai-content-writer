@@ -15,7 +15,8 @@ import {
   Lock,
   Clock,
   CheckCircle,
-  Calendar
+  Calendar,
+  Files
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -29,14 +30,22 @@ const features = [
     status: "available",
     highlights: ["Real-time chat", "Context awareness", "Multiple writing styles"]
   },
-  // {
-  //   category: "current", 
-  //   icon: ImageIcon,
-  //   title: "AI Image Generation",
-  //   description: "Create stunning visuals with Google's Gemini 2.5 Flash Image model via OpenRouter.",
-  //   status: "unavailable",
-  //   highlights: ["Text-to-image", "Image analysis", "High quality output"]
-  // },
+  {
+    category: "current", 
+    icon: ImageIcon,
+    title: "AI Image Generation",
+    description: "Create stunning visuals with Google's Gemini 2.5 Flash Image model via OpenRouter.",
+    status: "available",
+    highlights: ["Text-to-image", "High quality output"]
+  },
+  {
+    category: "current",
+    icon: Files,
+    title: "AI Resume Analyzer",
+    description: "Analyze your resume with Google's Gemini 2.5 Flash model.",
+    status: "available",
+    highlights: ["Resume analysis", "Information extraction", "ATS compatibility analysis"]
+  },
   {
     category: "current",
     icon: Search,
@@ -61,56 +70,6 @@ const features = [
     status: "available",
     highlights: ["Multiple categories", "Custom prompts", "Quick start"]
   },
-
-  // Coming Soon Features
-  {
-    category: "future",
-    icon: BarChart3,
-    title: "Analytics Dashboard",
-    description: "Track your writing productivity, content performance, and AI usage statistics.",
-    status: "coming-soon",
-    highlights: ["Usage analytics", "Performance metrics", "Productivity insights"]
-  },
-  {
-    category: "future",
-    icon: Globe,
-    title: "Multi-language Support",
-    description: "Write and translate content in multiple languages with advanced AI translation.",
-    status: "coming-soon", 
-    highlights: ["50+ languages", "Auto-translation", "Cultural adaptation"]
-  },
-  {
-    category: "future",
-    icon: Brain,
-    title: "Advanced AI Models",
-    description: "Access to cutting-edge AI models including Claude, Gemini, and custom fine-tuned models.",
-    status: "coming-soon",
-    highlights: ["Multiple AI providers", "Model switching", "Custom training"]
-  },
-  {
-    category: "future",
-    icon: Zap,
-    title: "Workflow Automation",
-    description: "Automate repetitive writing tasks with custom workflows and templates.",
-    status: "coming-soon",
-    highlights: ["Custom workflows", "Template library", "Batch processing"]
-  },
-  {
-    category: "future",
-    icon: Lock,
-    title: "Enterprise Features",
-    description: "Advanced features for teams including SSO, advanced permissions, and API access.",
-    status: "coming-soon",
-    highlights: ["SSO integration", "Role management", "API access"]
-  },
-  {
-    category: "future",
-    icon: Sparkles,
-    title: "Content Optimization",
-    description: "AI-powered SEO optimization, readability scoring, and content enhancement suggestions.",
-    status: "coming-soon",
-    highlights: ["SEO optimization", "Readability scores", "Content enhancement"]
-  }
 ];
 
 export function FeaturesSection() {
@@ -192,60 +151,6 @@ export function FeaturesSection() {
             ))}
           </div>
         </motion.div>
-
-        {/* Coming Soon Features */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex items-center gap-3 mb-8">
-            <Calendar className="w-6 h-6 text-purple-600" />
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Coming Soon</h3>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.filter(f => f.category === "future").map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="h-full border-0 shadow-md bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-800 dark:to-slate-700 opacity-80">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                      <div className="p-3 bg-gradient-to-br from-gray-400 to-gray-500 rounded-xl">
-                        <feature.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <Badge variant="outline" className="border-purple-300 text-purple-600 dark:border-purple-600 dark:text-purple-400">
-                        <Clock className="w-3 h-3 mr-1" />
-                        Coming Soon
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-xl text-gray-900 dark:text-white">
-                      {feature.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 dark:text-gray-300 mb-4">
-                      {feature.description}
-                    </p>
-                    <div className="space-y-2">
-                      {feature.highlights.map((highlight, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                          {highlight}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div> */}
       </div>
     </section>
   );
