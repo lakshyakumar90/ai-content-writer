@@ -9,19 +9,23 @@ export function signToken(userId: string) {
 }
 
 export function setAuthCookie(res: Response, token: string) {
+  const isProduction = process.env.NODE_ENV === 'production';
   res.cookie(TOKEN_COOKIE, token, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: false,
+    sameSite: isProduction ? "none" : "lax", // "none" required for cross-origin in production
+    secure: isProduction, // true in production (HTTPS), false in development
     maxAge: 7 * 24 * 60 * 60 * 1000,
+    // Add domain if needed (usually not required)
+    // domain: process.env.COOKIE_DOMAIN,
   });
 }
 
 export function clearAuthCookie(res: Response) {
+  const isProduction = process.env.NODE_ENV === 'production';
   res.clearCookie(TOKEN_COOKIE, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: false,
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
   });
 }
 
@@ -30,7 +34,17 @@ export interface AuthedRequest extends Request {
 }
 
 export function requireAuth(req: AuthedRequest, res: Response, next: NextFunction) {
-  const token = (req as any).cookies?.[TOKEN_COOKIE];
+  // Try cookie first
+  let token = (req as any).cookies?.[TOKEN_COOKIE];
+  
+  // Fallback to Authorization header
+  if (!token) {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    }
+  }
+  
   if (!token) return res.status(401).json({ error: "Unauthorized" });
   try {
     const payload = jwt.verify(token, JWT_SECRET) as any;
