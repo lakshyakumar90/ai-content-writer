@@ -1,156 +1,103 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { 
-  MessageSquare, 
-  Image as ImageIcon, 
-  FileText, 
-  Brain, 
-  Zap, 
-  Shield, 
-  Users, 
-  Search,
-  BarChart3,
-  Globe,
-  Sparkles,
-  Lock,
-  Clock,
-  CheckCircle,
-  Calendar,
-  Files
-} from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowUpRight, MessageSquare, Image as ImageIcon, Files, Search, Shield, FileText } from "lucide-react";
 
 const features = [
-  // Current Features
   {
-    category: "current",
     icon: MessageSquare,
     title: "AI Writing Assistant",
-    description: "Get intelligent writing help with OpenAI GPT-4 integration for content creation, editing, and brainstorming.",
-    status: "available",
+    description: "Intelligent writing help with GPT-4 integration for content creation, editing, and brainstorming.",
     highlights: ["Real-time chat", "Context awareness", "Multiple writing styles"]
   },
   {
-    category: "current", 
     icon: ImageIcon,
     title: "AI Image Generation",
     description: "Create stunning visuals with Google's Gemini 2.5 Flash Image model via OpenRouter.",
-    status: "available",
     highlights: ["Text-to-image", "High quality output"]
   },
   {
-    category: "current",
     icon: Files,
     title: "AI Resume Analyzer",
-    description: "Analyze your resume with Google's Gemini 2.5 Flash model.",
-    status: "available",
-    highlights: ["Resume analysis", "Information extraction", "ATS compatibility analysis"]
+    description: "Analyze your resume with Gemini 2.5 Flash for ATS compatibility and insights.",
+    highlights: ["Resume analysis", "Information extraction"]
   },
   {
-    category: "current",
     icon: Search,
     title: "Web Research",
-    description: "Get current information and facts with live web search capabilities using Tavily API.",
-    status: "available", 
+    description: "Get current information with live web search capabilities using Tavily API.",
     highlights: ["Real-time data", "Fact checking", "Source citations"]
   },
   {
-    category: "current",
     icon: Shield,
-    title: "Secure Authentication",
+    title: "Secure Auth",
     description: "Enterprise-grade security with JWT authentication and encrypted data transmission.",
-    status: "available",
-    highlights: ["JWT tokens", "Secure sessions", "Data encryption"]
+    highlights: ["JWT tokens", "Secure sessions"]
   },
   {
-    category: "current",
     icon: FileText,
     title: "Writing Prompts",
-    description: "Get inspired with categorized prompts for business, content, communication, and creative tasks.",
-    status: "available",
-    highlights: ["Multiple categories", "Custom prompts", "Quick start"]
+    description: "Inspired prompts for business, content, communication, and creative writing.",
+    highlights: ["Multiple categories", "Custom prompts"]
   },
 ];
 
 export function FeaturesSection() {
   return (
-    <section className="py-20 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 mb-4">
-            Features
-          </Badge>
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            Everything you need to{" "}
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              create amazing content
-            </span>
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            From AI-powered writing assistance to image generation, we provide all the tools you need to bring your ideas to life.
-          </p>
-        </motion.div>
+    <section className="py-12 sm:py-[68px] bg-[#012624]">
+      <div className="max-w-page mx-auto px-5 sm:px-6 lg:px-8">
+        {/* Section label */}
+        <div className="flex items-center gap-4 mb-8 sm:mb-12">
+          <span className="w-8 h-px bg-silver-mist/40" />
+          <span
+            className="font-matter font-medium text-xs uppercase text-silver-mist"
+            style={{ letterSpacing: '0.12em' }}
+          >
+            EXPLORE
+          </span>
+        </div>
 
-        {/* Current Features */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="mb-16"
+        <h2
+          className="font-matter font-medium text-platinum leading-none mb-10 sm:mb-14 max-w-3xl"
+          style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)', letterSpacing: '-0.04em' }}
         >
-          <div className="flex items-center gap-3 mb-8">
-            <CheckCircle className="w-6 h-6 text-green-600" />
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Available Now</h3>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.filter(f => f.category === "current").map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
+          Everything you need to create
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {features.map((feature) => (
+            <div
+              key={feature.title}
+              className="bg-[#003734] rounded-[16px] p-6 sm:p-7 lg:p-8 flex flex-col group"
+            >
+              <div className="flex items-start justify-between mb-4 sm:mb-5">
+                <div className="w-8 h-8 rounded-[6px] bg-[rgba(3,81,75,0.5)] flex items-center justify-center shrink-0">
+                  <feature.icon className="w-4 h-4 text-platinum" />
+                </div>
+                <div className="w-8 h-8 rounded-[6px] bg-[rgba(3,81,75,0.5)] flex items-center justify-center group-hover:opacity-80 transition-opacity shrink-0">
+                  <ArrowUpRight className="w-4 h-4 text-platinum" />
+                </div>
+              </div>
+              <h3
+                className="font-matter font-medium text-platinum leading-none mb-2 sm:mb-3"
+                style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)' }}
               >
-                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-0 shadow-md">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                      <div className="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl">
-                        <feature.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">
-                        Available
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-xl text-gray-900 dark:text-white">
-                      {feature.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 dark:text-gray-300 mb-4">
-                      {feature.description}
-                    </p>
-                    <div className="space-y-2">
-                      {feature.highlights.map((highlight, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                          <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-                          {highlight}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+                {feature.title}
+              </h3>
+              <p className="font-matter font-regular text-silver-mist text-sm leading-relaxed mb-4 sm:mb-5 flex-1">
+                {feature.description}
+              </p>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                {feature.highlights.map((h, idx) => (
+                  <span
+                    key={idx}
+                    className="font-matter font-regular text-[10px] uppercase text-silver-mist/70 border border-silver-mist/20 rounded-[6px] px-2 py-1"
+                    style={{ letterSpacing: '0.15em' }}
+                  >
+                    {h}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

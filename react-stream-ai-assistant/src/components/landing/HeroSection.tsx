@@ -1,106 +1,128 @@
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import { ArrowRight, Sparkles, Zap, Brain } from "lucide-react";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
+function ParticleSphere() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
+    const particles: { x: number; y: number; z: number; size: number; speed: number; color: string }[] = [];
+    const count = 600;
+    const radius = Math.min(w, h) * 0.28;
+
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = radius * (0.8 + Math.random() * 0.2);
+      const isPink = Math.random() < 0.08;
+      particles.push({
+        x: Math.sin(phi) * Math.cos(theta) * r,
+        y: Math.sin(phi) * Math.sin(theta) * r,
+        z: Math.cos(phi) * r,
+        size: 1 + Math.random() * 2,
+        speed: 0.002 + Math.random() * 0.004,
+        color: isPink ? 'rgba(253, 233, 255,' : 'rgba(0, 200, 190,',
+      });
+    }
+
+    let angle = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      angle += 0.004;
+
+      const sorted = particles.map(p => {
+        const cosA = Math.cos(angle);
+        const sinA = Math.sin(angle);
+        const rx = p.x * cosA - p.z * sinA;
+        const rz = p.x * sinA + p.z * cosA;
+        const scale = 400 / (400 + rz);
+        return { ...p, rx, rz, scale };
+      }).sort((a, b) => a.rz - b.rz);
+
+      for (const p of sorted) {
+        const sx = w / 2 + p.rx * p.scale;
+        const sy = h / 2 + p.y * p.scale;
+        const alpha = Math.max(0.15, p.scale * 0.8);
+        ctx.beginPath();
+        ctx.arc(sx, sy, p.size * p.scale, 0, Math.PI * 2);
+        ctx.fillStyle = p.color + alpha + ')';
+        ctx.fill();
+      }
+
+      requestAnimationFrame(draw);
+    };
+    draw();
+
+    const resize = () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', resize);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full"
+      style={{ maskImage: 'radial-gradient(ellipse at center, transparent 30%, black 70%)', WebkitMaskImage: 'radial-gradient(ellipse at center, transparent 30%, black 70%)' }}
+    />
+  );
+}
 
 export function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative min-h-screen pt-28 flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center bg-[#012624]">
+      <ParticleSphere />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="space-y-8"
+      <div className="relative z-10 max-w-page mx-auto px-5 sm:px-6 lg:px-8 w-full flex flex-col items-center text-center pt-24 sm:pt-28 pb-24 sm:pb-32">
+        {/* Section label */}
+        <span
+          className="font-matter font-medium text-xs uppercase text-silver-mist mb-6 sm:mb-8"
+          style={{ letterSpacing: '0.12em' }}
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-500/30 px-4 py-2 text-sm font-medium">
-              <Sparkles className="w-4 h-4 mr-2" />
-              AI-Powered Content Creation Platform
-            </Badge>
-          </motion.div>
+          AI Content Studio
+        </span>
 
-          {/* Main Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-tight"
-          >
-            Write Better with{" "}
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
-              AI
-            </span>
-          </motion.h1>
+        {/* Hero Headline */}
+        <h1
+          className="font-matter font-medium text-platinum leading-none max-w-5xl"
+          style={{
+            fontSize: 'clamp(2rem, 6vw, 5.5rem)',
+            letterSpacing: '-0.04em',
+          }}
+        >
+          Write. Create.{' '}
+          <span className="text-gradient-aurora">Generate.</span>
+        </h1>
 
-          {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-xl sm:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed"
-          >
-            Transform your ideas into compelling content with our intelligent writing assistant. 
-            From brainstorming to final drafts, we've got you covered.
-          </motion.p>
+        {/* Subtext */}
+        <p
+          className="font-matter font-regular text-silver-mist mt-5 max-w-xl px-4"
+          style={{ fontSize: 'clamp(0.95rem, 2vw, 1.2rem)', lineHeight: '1.5' }}
+        >
+          An abyssal content studio — AI writing, image generation, and resume analysis in a single instrument-panel interface.
+        </p>
 
-          {/* Feature Pills */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex flex-wrap justify-center gap-3"
-          >
-            {[
-              { icon: Brain, text: "Smart Writing Assistant" },
-              { icon: Zap, text: "Real-time Collaboration" },
-              { icon: Sparkles, text: "AI Image Generation" },
-            ].map((feature, index) => (
-              <motion.div
-                key={feature.text}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-white/90"
-              >
-                <feature.icon className="w-4 h-4 text-purple-400" />
-                <span className="text-sm font-medium">{feature.text}</span>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8"
-          >
-            <Button
-              onClick={() => navigate("/signup")}
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-2xl shadow-purple-500/25 transition-all duration-300 hover:shadow-purple-500/40 hover:scale-105"
-            >
-              Start Writing Now
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </motion.div>
-        </motion.div>
+        {/* CTA */}
+        <button
+          onClick={() => navigate("/signup")}
+          className="font-arial text-sm uppercase text-[#222222] gradient-aurora px-8 py-3 rounded-[6px] font-regular mt-8 sm:mt-10 transition-opacity hover:opacity-90"
+          style={{ letterSpacing: '0.08em' }}
+        >
+          Enter the Abyss
+        </button>
       </div>
     </section>
   );
