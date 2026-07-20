@@ -20,7 +20,7 @@ export function CTASection() {
     <section className="py-12 sm:py-[68px] bg-[#012624]">
       <div className="max-w-page mx-auto px-5 sm:px-6 lg:px-8">
         {/* Section label */}
-        <div className="flex items-center gap-4 mb-8 sm:mb-12">
+        <div className="flex items-center gap-4 mb-6 sm:mb-8">
           <span className="w-8 h-px bg-silver-mist/40" />
           <span
             className="font-matter font-medium text-xs uppercase text-silver-mist"
@@ -31,7 +31,7 @@ export function CTASection() {
         </div>
 
         {/* Recessed card */}
-        <div className="bg-[#011d1c] rounded-[16px] py-16 sm:py-20 lg:py-[120px] px-5 sm:px-8 lg:px-9 text-center">
+        <div className="bg-[#011d1c] rounded-[16px] py-12 sm:py-16 lg:py-[120px] px-5 sm:px-8 lg:px-9 text-center">
           <h2
             className="font-matter font-medium text-platinum leading-none mb-5 sm:mb-6 max-w-3xl mx-auto"
             style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)', letterSpacing: '-0.04em' }}
@@ -45,7 +45,7 @@ export function CTASection() {
             Join thousands of creators already using AI to create better content faster. No setup required.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10 sm:mb-12">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-10">
             {benefits.map((benefit) => (
               <span
                 key={benefit}
@@ -68,7 +68,7 @@ export function CTASection() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mt-12 sm:mt-16 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mt-10 sm:mt-14 text-center">
           {stats.map((stat) => (
             <div key={stat.label}>
               <div

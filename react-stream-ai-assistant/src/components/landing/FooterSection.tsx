@@ -16,7 +16,7 @@ export function FooterSection() {
   return (
     <footer className="bg-[#011d1c]">
       <div className="max-w-page mx-auto px-5 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-[120px]">
-        <div className="flex flex-col sm:flex-row lg:flex-row justify-between gap-12 sm:gap-16">
+        <div className="flex flex-col sm:flex-row lg:flex-row justify-between gap-8 sm:gap-12">
           {/* Brand */}
           <div className="max-w-xs">
             <div className="flex items-center gap-3 mb-5">
@@ -79,7 +79,7 @@ export function FooterSection() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/5 mt-12 sm:mt-16 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
+        <div className="border-t border-white/5 mt-10 sm:mt-14 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
           <span className="font-matter font-regular text-[10px] uppercase text-silver-mist/40" style={{ letterSpacing: '0.15em' }}>
             &copy; 2025 Stream. All rights reserved.
           </span>

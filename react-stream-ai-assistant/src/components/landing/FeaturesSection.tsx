@@ -44,7 +44,7 @@ export function FeaturesSection() {
     <section className="py-12 sm:py-[68px] bg-[#012624]">
       <div className="max-w-page mx-auto px-5 sm:px-6 lg:px-8">
         {/* Section label */}
-        <div className="flex items-center gap-4 mb-8 sm:mb-12">
+        <div className="flex items-center gap-4 mb-6 sm:mb-8">
           <span className="w-8 h-px bg-silver-mist/40" />
           <span
             className="font-matter font-medium text-xs uppercase text-silver-mist"
